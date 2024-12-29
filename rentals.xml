@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<Schema name="rentals">
+    <Cube name="FactPaymentCube" defaultMeasure="Amount">
+        <!-- Tabel Faktual -->
+        <Table name="fact_payment" schema="dwh"/>
+
+        <!-- Dimensi Waktu -->
+        <Dimension name="Time" foreignKey="sk_waktu">
+            <Hierarchy hasAll="true" allMemberName="All Time" primaryKey="sk_waktu">
+                <Table name="dim_date" schema="dwh"/>
+                <Level name="Year" column="tahun" type="Numeric" uniqueMembers="true" levelType="TimeYears"/>
+                <Level name="Month" column="nama_bulan" type="String" uniqueMembers="false" levelType="TimeMonths"/>
+                <Level name="Day" column="tanggal" type="Date" uniqueMembers="false" levelType="TimeDays"/>
+            </Hierarchy>
+        </Dimension>
+
+        <!-- Dimensi Customer -->
+        <Dimension name="Customer" foreignKey="sk_customer">
+            <Hierarchy hasAll="true" allMemberName="All Customers" primaryKey="sk_customer">
+                <Table name="dim_customer" schema="dwh"/>
+                <Level name="Customer Name" column="customer_name" type="String"/>
+                <Level name="City" column="customer_city" type="String"/>
+                <Level name="Country" column="customer_country" type="String"/>
+            </Hierarchy>
+        </Dimension>
+
+        <!-- Dimensi Film -->
+        <Dimension name="Film" foreignKey="sk_film">
+            <Hierarchy hasAll="true" allMemberName="All Films" primaryKey="sk_film">
+                <Table name="dim_film" schema="dwh"/>
+                <Level name="Title" column="film_title" type="String"/>
+                <Level name="Genre" column="film_genre" type="String"/>
+                <Level name="Language" column="film_language" type="String"/>
+            </Hierarchy>
+        </Dimension>
+
+        <!-- Dimensi Rental -->
+        <Dimension name="Rental" foreignKey="sk_rental">
+            <Hierarchy hasAll="true" allMemberName="All Rentals" primaryKey="sk_rental">
+                <Table name="dim_rental" schema="dwh"/>
+                <Level name="Staff Name" column="staff_fullname" type="String"/>
+                <Level name="Rental Date" column="rental_date" type="Date"/>
+                <Level name="Return Date" column="return_date" type="Date"/>
+            </Hierarchy>
+        </Dimension>
+
+        <!-- Dimensi Actor -->
+        <Dimension name="Actor" foreignKey="sk_actor">
+            <Hierarchy hasAll="true" allMemberName="All Actors" primaryKey="sk_actor">
+                <Table name="dim_actor" schema="dwh"/>
+                <Level name="Actor Name" column="actor_name" type="String" />
+                <Level name="Title" column="title" type="String"/>
+            </Hierarchy>
+        </Dimension>
+
+        <!-- Measures -->
+        <Measure name="Amount" column="amount" aggregator="sum" formatString="#,###.00"/>
+        <Measure name="Rental Duration" column="rental_duration" aggregator="sum" formatString="#,###"/>
+        <Measure name="Replacement Cost" column="replacement_cost" aggregator="sum" formatString="#,###.00"/>
+    </Cube>
+</Schema>
